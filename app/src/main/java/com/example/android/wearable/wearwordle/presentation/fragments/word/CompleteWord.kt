@@ -1,0 +1,107 @@
+package com.example.android.wearable.wearwordle.presentation.fragments.word
+
+import android.app.RemoteInput
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ContactSupport
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.wear.compose.material.*
+import androidx.wear.compose.material.CardDefaults
+import androidx.wear.input.RemoteInputIntentHelper
+import com.example.android.wearable.wearwordle.gamelogic.WordGuess
+import com.example.android.wearable.wearwordle.presentation.fragments.Paths
+import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
+import com.example.android.wearable.wearwordle.presentation.viewmodels.Language
+import java.lang.Exception
+
+@Composable
+fun CompleteWord(navHostController: NavHostController, listState: ScalingLazyListState, completeWordViewModel: CompleteWordViewModel = CompleteWordViewModel()){
+
+    val wordGuesses by completeWordViewModel.wordGuesses.observeAsState(listOf())
+
+    LaunchedEffect(Unit){
+        completeWordViewModel.fetchWordFromLanguage(Language.EN)
+    }
+
+    val remoteKeyboardLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){ inputActivityResult ->
+        inputActivityResult.data.let { remoteInputIntent ->
+            // TODO: Improve this Try catch.
+            try {
+                val remoteInputBundle = RemoteInput.getResultsFromIntent(remoteInputIntent)
+                val wordGuess = remoteInputBundle.getCharSequence("word_guess")
+                completeWordViewModel.doGuessOfWord(wordGuess.toString())
+            }
+            catch (e : Exception){
+                println(e.message)
+            }
+        }
+    }
+
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            top = 32.dp,
+            start = 8.dp,
+            end = 8.dp,
+            bottom = 32.dp
+        ),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        items(wordGuesses.size){ guessIndex ->
+            WordTryHolder(wordGuesses[guessIndex])
+        }
+        item {
+            Chip(
+                modifier = Modifier,
+                label = {
+                    Text(text = "Guess")
+                },
+                onClick = {
+                    val intent = RemoteInputIntentHelper.createActionRemoteInputIntent()
+                    val remoteInputs: List<RemoteInput> = listOf(RemoteInput.Builder("word_guess").setLabel("Your Guess").build())
+                    RemoteInputIntentHelper.putRemoteInputsExtra(intent, remoteInputs)
+                    remoteKeyboardLauncher.launch(intent)
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.ContactSupport,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .wrapContentSize(align = Alignment.Center),
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun WordTryHolder(guessAnnotated: AnnotatedString){
+    Card(
+        onClick = { /*TODO*/ },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        backgroundPainter = CardDefaults.cardBackgroundPainter(Color(0xFF828485), Color(0xFFFFFFFF))
+    ) {
+        Text(text = guessAnnotated,
+            modifier = Modifier.fillMaxWidth(),
+            letterSpacing = 10.sp, textAlign = TextAlign.Center)
+    }
+}
