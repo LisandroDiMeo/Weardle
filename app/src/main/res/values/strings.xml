@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">WearWordle</string>
     <string name="hello_world">From the Square world,\nHello, %1$s!</string>
+    <string name="game_result_lost">Game Over 😭</string>
+    <string name="game_result_won">You won in %s attempts 🥳!</string>
 </resources>

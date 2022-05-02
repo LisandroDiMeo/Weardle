@@ -4,28 +4,34 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.example.android.wearable.wearwordle.database.entities.Word
 import com.example.android.wearable.wearwordle.gamelogic.WordGuess
-import kotlinx.coroutines.launch
+import com.example.android.wearable.wearwordle.network.repository.WordsRepository
+import kotlinx.coroutines.flow.Flow
 
 class CompleteWordViewModel : ViewModel() {
 
     private lateinit var wordGuess: WordGuess
 
-    private val _word = MutableLiveData<String>(null)
-    val word : LiveData<String> get() = _word
+    lateinit var repository: WordsRepository
 
     private val _wordGuesses = MutableLiveData<List<AnnotatedString>>(listOf())
     val wordGuesses : LiveData<List<AnnotatedString>> get() = _wordGuesses
 
-    private val _gameWon = MutableLiveData<Boolean>(null)
-    val gameWon : LiveData<Boolean> get() = _gameWon
+    private val _gameStatus = MutableLiveData(GameStatus.PLAYING)
+    val gameStatus : LiveData<GameStatus> get() = _gameStatus
 
-    fun fetchWordFromLanguage(language: Language){
-        viewModelScope.launch {
-            _word.value = WORDS.random()
-            wordGuess = WordGuess(_word.value!!, onGuessCorrect = { _gameWon.value = true }, onGameOver = { _gameWon.value = false })
-        }
+    private val onGameOver : () -> Unit = {
+        _gameStatus.postValue(GameStatus.LOST)
+    }
+    private val onGameWon : () -> Unit = {
+        _gameStatus.postValue(GameStatus.WON)
+    }
+
+    fun fetchWordFromLanguage(language: Language): Flow<Word> = repository.fetchRandomWord(language)
+
+    fun startGuessingWithWord(word: String){
+        wordGuess = WordGuess(word.uppercase(), onGuessCorrect = onGameWon, onGameOver = onGameOver)
     }
 
     fun doGuessOfWord(guess: String){
@@ -37,4 +43,8 @@ enum class Language {
     EN, SP, FR
 }
 
-private val WORDS = listOf("HELLO","BOATS","DOORS","NAILS","ABORT","GREED","GRIEF","QUIRK","QUOTE","RADAR","RELAX")
+fun Language.tableName() = "words_${this.name.lowercase()}"
+
+enum class GameStatus {
+    PLAYING, LOST, WON
+}

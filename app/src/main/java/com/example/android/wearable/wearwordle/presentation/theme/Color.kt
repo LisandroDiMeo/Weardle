@@ -9,6 +9,17 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 val Red400 = Color(0xFFCF6679)
 
+val Green400 = Color(0xff03a56a)
+val Red200 = Color(0xFFD50000)
+
+internal var gameResultsPalette: Colors = Colors(
+    primary = Green400,
+    error = Red200,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onError = Color.White
+)
+
 internal val wearColorPalette: Colors = Colors(
     primary = Purple200,
     primaryVariant = Purple700,

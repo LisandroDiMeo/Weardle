@@ -16,6 +16,7 @@ import androidx.wear.compose.navigation.composable
 import com.example.android.wearable.wearwordle.R
 import com.example.android.wearable.wearwordle.presentation.fragments.home.Home
 import com.example.android.wearable.wearwordle.presentation.fragments.word.CompleteWord
+import com.example.android.wearable.wearwordle.presentation.fragments.word.GameResult
 import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
 
 @Composable
@@ -32,7 +33,12 @@ fun NavGraph(
             Home(navController, listState)
         }
         composable(Paths.WORD){
+            BackHandler() { navController.navigate(Paths.HOME) }
             CompleteWord(navController, listState, completeWordViewModel)
+        }
+        composable(Paths.GAMEOVER){
+            BackHandler() { navController.navigate(Paths.HOME) }
+            GameResult(navController, completeWordViewModel.gameStatus.value!!, 3)
         }
     }
 }
@@ -40,4 +46,5 @@ fun NavGraph(
 object Paths {
     const val HOME = "home"
     const val WORD = "word"
+    const val GAMEOVER = "gameover"
 }

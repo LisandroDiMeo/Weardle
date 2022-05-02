@@ -14,17 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
 import androidx.wear.compose.material.CardDefaults
 import androidx.wear.input.RemoteInputIntentHelper
-import com.example.android.wearable.wearwordle.gamelogic.WordGuess
+import com.example.android.wearable.wearwordle.database.entities.Word
 import com.example.android.wearable.wearwordle.presentation.fragments.Paths
 import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
+import com.example.android.wearable.wearwordle.presentation.viewmodels.GameStatus
 import com.example.android.wearable.wearwordle.presentation.viewmodels.Language
 import java.lang.Exception
 
@@ -32,9 +31,16 @@ import java.lang.Exception
 fun CompleteWord(navHostController: NavHostController, listState: ScalingLazyListState, completeWordViewModel: CompleteWordViewModel = CompleteWordViewModel()){
 
     val wordGuesses by completeWordViewModel.wordGuesses.observeAsState(listOf())
+    val wordToGuess by completeWordViewModel.fetchWordFromLanguage(Language.EN).collectAsState(Word(-1,""))
+    val gameResult by completeWordViewModel.gameStatus.observeAsState(GameStatus.PLAYING)
 
-    LaunchedEffect(Unit){
-        completeWordViewModel.fetchWordFromLanguage(Language.EN)
+    LaunchedEffect(!wordToGuess.word.isNullOrEmpty()){
+        completeWordViewModel.startGuessingWithWord(wordToGuess.word!!)
+    }
+    if(gameResult != GameStatus.PLAYING){
+        LaunchedEffect(Unit){
+            navHostController.navigate(Paths.GAMEOVER)
+        }
     }
 
     val remoteKeyboardLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){ inputActivityResult ->
@@ -43,7 +49,7 @@ fun CompleteWord(navHostController: NavHostController, listState: ScalingLazyLis
             try {
                 val remoteInputBundle = RemoteInput.getResultsFromIntent(remoteInputIntent)
                 val wordGuess = remoteInputBundle.getCharSequence("word_guess")
-                completeWordViewModel.doGuessOfWord(wordGuess.toString())
+                completeWordViewModel.doGuessOfWord(wordGuess.toString().uppercase())
             }
             catch (e : Exception){
                 println(e.message)
