@@ -17,21 +17,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.Navigator
 import androidx.wear.compose.material.*
 import androidx.wear.compose.material.CardDefaults
 import androidx.wear.input.RemoteInputIntentHelper
 import com.example.android.wearable.wearwordle.database.entities.Word
 import com.example.android.wearable.wearwordle.presentation.fragments.Paths
 import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
-import com.example.android.wearable.wearwordle.presentation.viewmodels.GameStatus
-import com.example.android.wearable.wearwordle.presentation.viewmodels.Language
+import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.GameStatus
+import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.Language
 import java.lang.Exception
 
 @Composable
-fun CompleteWord(navHostController: NavHostController, listState: ScalingLazyListState, completeWordViewModel: CompleteWordViewModel = CompleteWordViewModel()){
+fun CompleteWord(navHostController: NavHostController, listState: ScalingLazyListState, completeWordViewModel: CompleteWordViewModel, language: Language){
 
     val wordGuesses by completeWordViewModel.wordGuesses.observeAsState(listOf())
-    val wordToGuess by completeWordViewModel.fetchWordFromLanguage(Language.EN).collectAsState(Word(-1,""))
+    val wordToGuess by completeWordViewModel.fetchWordFromLanguage(language).collectAsState(Word(-1,""))
     val gameResult by completeWordViewModel.gameStatus.observeAsState(GameStatus.PLAYING)
 
     LaunchedEffect(!wordToGuess.word.isNullOrEmpty()){

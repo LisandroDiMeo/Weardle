@@ -50,7 +50,7 @@ fun Home(navHostController: NavHostController, listState: ScalingLazyListState){
                 label = {
                     Text(text = category.categoryLabel)
                 },
-                onClick = { navHostController.navigate(Paths.WORD) },
+                onClick = { navHostController.navigate("word?language=${categoryList[index].shortName}") },
                 icon = {
                     Icon(
                         imageVector = category.imageVector,

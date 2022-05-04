@@ -10,12 +10,13 @@ val Teal200 = Color(0xFF03DAC5)
 val Red400 = Color(0xFFCF6679)
 
 val Green400 = Color(0xff03a56a)
+val Green200 = Color(0xFFB9F6CA)
 val Red200 = Color(0xFFD50000)
 
 internal var gameResultsPalette: Colors = Colors(
     primary = Green400,
     error = Red200,
-    onPrimary = Color.White,
+    onPrimary = Green200,
     onSecondary = Color.White,
     onError = Color.White
 )

@@ -10,6 +10,7 @@ data class Category (val categoryLabel: String, val categoryIcon: String){
         "ENGLISH" -> Icons.Rounded.OutdoorGrill
         else -> Icons.Rounded.HealthAndSafety
     }
+    val shortName = categoryLabel.substring(0,2).uppercase()
 }
 
 val categoryList = listOf(

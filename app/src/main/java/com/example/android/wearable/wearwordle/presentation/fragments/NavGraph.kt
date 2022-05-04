@@ -1,23 +1,17 @@
 package com.example.android.wearable.wearwordle.presentation.fragments
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
-import androidx.wear.compose.material.MaterialTheme
+import androidx.navigation.navArgument
 import androidx.wear.compose.material.ScalingLazyListState
-import androidx.wear.compose.material.Text
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
-import com.example.android.wearable.wearwordle.R
 import com.example.android.wearable.wearwordle.presentation.fragments.home.Home
 import com.example.android.wearable.wearwordle.presentation.fragments.word.CompleteWord
 import com.example.android.wearable.wearwordle.presentation.fragments.word.GameResult
 import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
+import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.Language
 
 @Composable
 fun NavGraph(
@@ -29,22 +23,34 @@ fun NavGraph(
 
     SwipeDismissableNavHost(navController, startDestination = Paths.HOME){
         composable(Paths.HOME){
+            completeWordViewModel.resetGameState()
             BackHandler() { onFinishActivity() }
             Home(navController, listState)
         }
-        composable(Paths.WORD){
+        composable(
+            Paths.WORD,
+            arguments = listOf(navArgument("language") { defaultValue = "EN" })
+        ){ navBackStackEntry ->
             BackHandler() { navController.navigate(Paths.HOME) }
-            CompleteWord(navController, listState, completeWordViewModel)
+            CompleteWord(navController, listState, completeWordViewModel, navBackStackEntry.arguments?.getString("language")!!.toLanguage())
         }
         composable(Paths.GAMEOVER){
             BackHandler() { navController.navigate(Paths.HOME) }
-            GameResult(navController, completeWordViewModel.gameStatus.value!!, 3)
+            GameResult(navController, completeWordViewModel.gameStatus.value!!, completeWordViewModel.attempts())
         }
     }
 }
 
 object Paths {
     const val HOME = "home"
-    const val WORD = "word"
+    const val WORD = "word?language={language}"
     const val GAMEOVER = "gameover"
 }
+
+fun String.toLanguage() =
+    when(this){
+        "EN" -> Language.EN
+        "SP" -> Language.SP
+        "FR" -> Language.FR
+        else -> Language.EN
+    }

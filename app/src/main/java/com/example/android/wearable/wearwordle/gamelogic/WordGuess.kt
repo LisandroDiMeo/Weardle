@@ -11,7 +11,8 @@ import androidx.compose.ui.unit.sp
 
 class WordGuess(private val word: String, private val onGuessCorrect : () -> Unit, private val onGameOver : () -> Unit = {}) {
 
-    private var attempts = 0
+    var attempts = 0
+        private set
 
     private val charCounts = mutableMapOf<Char, Int>()
 

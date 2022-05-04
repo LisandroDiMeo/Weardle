@@ -2,13 +2,8 @@ package com.example.android.wearable.wearwordle.network.repository
 
 import com.example.android.wearable.wearwordle.database.daos.WordDao
 import com.example.android.wearable.wearwordle.database.entities.Word
-import com.example.android.wearable.wearwordle.presentation.viewmodels.Language
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.Language
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
-import kotlin.random.Random
 import kotlin.reflect.full.createInstance
 
 class WordsRepository constructor(private val wordDao: WordDao) {
