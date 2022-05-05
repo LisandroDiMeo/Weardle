@@ -22,6 +22,7 @@ import androidx.wear.compose.material.*
 import androidx.wear.compose.material.CardDefaults
 import androidx.wear.input.RemoteInputIntentHelper
 import com.example.android.wearable.wearwordle.database.entities.Word
+import com.example.android.wearable.wearwordle.models.categoryList
 import com.example.android.wearable.wearwordle.presentation.fragments.Paths
 import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
 import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.GameStatus
@@ -40,7 +41,7 @@ fun CompleteWord(navHostController: NavHostController, listState: ScalingLazyLis
     }
     if(gameResult != GameStatus.PLAYING){
         LaunchedEffect(Unit){
-            navHostController.navigate(Paths.GAMEOVER)
+            navHostController.navigate("gameover?language=${language}")
         }
     }
 

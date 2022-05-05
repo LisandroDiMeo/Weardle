@@ -21,14 +21,21 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.example.android.wearable.wearwordle.R
+import com.example.android.wearable.wearwordle.models.categoryList
 import com.example.android.wearable.wearwordle.presentation.fragments.Paths
 import com.example.android.wearable.wearwordle.presentation.theme.Green200
 import com.example.android.wearable.wearwordle.presentation.theme.gameResultsPalette
+import com.example.android.wearable.wearwordle.presentation.viewmodels.CompleteWordViewModel
 import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.GameStatus
+import com.example.android.wearable.wearwordle.presentation.viewmodels.symbols.Language
 
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
-fun GameResult(navHostController: NavHostController = rememberSwipeDismissableNavController(), gameResult: GameStatus = GameStatus.LOST, attempts: Int = 3){
+fun GameResult(navHostController: NavHostController = rememberSwipeDismissableNavController(),
+               viewModel: CompleteWordViewModel = CompleteWordViewModel(),
+               gameResult: GameStatus = GameStatus.LOST,
+               attempts: Int = 3,
+               language: Language = Language.EN){
     val stringId = if(GameStatus.WON == gameResult) R.string.game_result_won else R.string.game_result_lost
     val backgroundColor = if(GameStatus.WON == gameResult) gameResultsPalette.primary else gameResultsPalette.error
     val buttonBackgroundColor = if(GameStatus.WON == gameResult) gameResultsPalette.onPrimary else gameResultsPalette.onError
@@ -51,7 +58,10 @@ fun GameResult(navHostController: NavHostController = rememberSwipeDismissableNa
             Button(
                 modifier = Modifier.padding(10.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonBackgroundColor),
-                onClick = { navHostController.navigate(Paths.WORD) },
+                onClick = {
+                        viewModel.resetGameState()
+                        navHostController.navigate("word?language=${language}")
+                    },
             ){
                 Icon(
                     imageVector = Icons.Rounded.Refresh,
@@ -65,7 +75,10 @@ fun GameResult(navHostController: NavHostController = rememberSwipeDismissableNa
             Button(
                 modifier = Modifier.padding(10.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonBackgroundColor),
-                onClick = { navHostController.navigate(Paths.HOME) },
+                onClick = {
+                        viewModel.resetGameState()
+                        navHostController.navigate(Paths.HOME)
+                },
             ){
                 Icon(
                     imageVector = Icons.Rounded.Close,
