@@ -1,39 +1,25 @@
-Compose for Wear OS Starter Sample
+Compose for Wear OS Wordle Demo
 ==================================
-Demonstrates a simple "Hello, World" starter project for using Compose with Wear OS.
+Demonstrates "Wordle Game" project using Compose with Wear OS.
 
 Introduction
 ------------
 
-Simple "Hello, World" app meant as a starting point for a new project using
-Compose for Wear OS.
+Simple "Wordle Game" implementation for WearOS meant as a demo/poc for Compose for Wear OS.
 
-Displays only a centered [Text] composable, and the actual text varies based on the shape of the
-device (round vs. square/rectangular).
+This demo implements various concepts from Compose/Jetpack, and it's useful to see how easily you can develop android apps for wearables using compose.
 
 For more information on composable options in Compose for Wear OS, check out our
 [documentation](https://developer.android.com/reference/kotlin/androidx/wear/compose/material/package-summary.html).
 
-Screenshots
+Demo
 -----------
 
-<img src="screenshots/round_hello.png" height="372" alt="Round Screenshot"/>
+https://user-images.githubusercontent.com/22039840/180848699-da69ca7c-0b13-4451-98b1-e82b9ca5b119.mov
 
-<img src="screenshots/square_hello.png" height="349" alt="Square Screenshot"/> 
-
-
-Getting Started
+Further Changes
 ---------------
 
-This sample uses the Gradle build system. To build this project,
-use the "gradlew build" command or use "Import Project" in Android Studio.
+In order to create a better experience reading/using this code, a refactor is in progress!
 
-Support
--------
 
-- Stack Overflow: http://stackoverflow.com/questions/tagged/android
-
-If you've found an error in this sample, please [create an issue](https://github.com/android/wear-os-samples/issues/new).
-
-Patches are encouraged, and may be submitted by forking this project and
-submitting a pull request through GitHub. Please see CONTRIBUTING.md for more details.
